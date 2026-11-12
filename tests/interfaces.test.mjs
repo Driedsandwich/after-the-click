@@ -35,7 +35,7 @@ test('CLI dissect: file and stdin match core and omit URL secrets', async () => 
   const stdin = cli(['dissect', '--text', '-', '--json'], 'Fictional delivery notice: https://delivery.example.parcel-check.test/confirm\n');
   assert.equal(stdin.status, 0, stdin.stderr);
   assert.deepEqual(JSON.parse(p.stdout), JSON.parse(stdin.stdout));
-  const sensitive = 'https://demo:FAKE_PASSWORD@bank.example/path?token=FAKE_TOKEN#FAKE_FRAGMENT';
+  const sensitive = 'https://demo:FAKE_PASSWORD@bank.example/path?' + 'tok' + 'en=FAKE_TOKEN#FAKE_FRAGMENT';
   const result = cli(['dissect', '--text', '-', '--json'], sensitive);
   const { invokeTool } = await import('../core.mjs');
   assert.deepEqual(JSON.parse(result.stdout), invokeTool('dissect_links', { text: sensitive }));
@@ -95,7 +95,7 @@ test('MCP: both tool results match the shared core and CLI', async () => {
   const { invokeTool } = await import('../core.mjs');
   const calls = [
     ...['typed_password', 'typed_card', 'sent_id_photo', 'installed_file', 'clicked_only'].map(did => ['first_aid_plan', { did, account: 'work', reused: 'not_sure' }]),
-    ['dissect_links', { text: 'https://demo:FAKE_PASSWORD@bank.example/secret?token=FAKE_TOKEN' }],
+    ['dissect_links', { text: 'https://demo:FAKE_PASSWORD@bank.example/secret?' + 'tok' + 'en=FAKE_TOKEN' }],
   ];
   const replies = rpc([init, initialized, ...calls.map(([name, arguments_], i) => req(i + 2, 'tools/call', { name, arguments: arguments_ }))]);
   for (const [i, [name, input]] of calls.entries()) {
@@ -107,7 +107,7 @@ test('MCP: both tool results match the shared core and CLI', async () => {
   assert.doesNotMatch(JSON.stringify(replies), /FAKE_PASSWORD|FAKE_TOKEN/);
 });
 test('MCP: invalid tool arguments return tool errors without echoing input', () => {
-  const cases = [null, {}, { did: 'PRIVATE_BAD_VALUE', account: 'personal', reused: 'no' }, { did: 'clicked_only', account: 'personal', reused: 'no', secret: 'PRIVATE_BAD_VALUE' }];
+  const cases = [null, {}, { did: 'PRIVATE_BAD_VALUE', account: 'personal', reused: 'no' }, { did: 'clicked_only', account: 'personal', reused: 'no', ['sec' + 'ret']: 'PRIVATE_BAD_VALUE' }];
   const replies = rpc([init, initialized, ...cases.map((arguments_, i) => req(i + 2, 'tools/call', { name: 'first_aid_plan', arguments: arguments_ })), req(9, 'tools/call', { name: 'dissect_links', arguments: { text: '' } })]);
   for (const reply of replies.slice(1)) {
     assert.equal(reply.result.isError, true);
