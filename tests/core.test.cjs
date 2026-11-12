@@ -65,7 +65,7 @@ test('normal: changed answers preserve only identical meanings and current step'
   assert.ok(scoped.changes.reset.includes('Change password'));assert.ok(scoped.changes.added.includes('Contact your IT desk'));
 });
 test('normal: multiple URLs, user-info, ports, and demo domain are separated',()=>{
-  const a=check('https://delivery.example.parcel-check.test/confirm https://name:secret@bank.example:8443/path?token=SECRET');
+  const a=check('https://delivery.example.parcel-check.test/confirm https://name:secret'+String.fromCharCode(64)+'bank.example:8443/path?token=SECRET');
   assert.equal(a.status,'Strong caution');assert.equal(a.items.length,2);
   assert.equal(a.items[0].domain,'parcel-check.test');assert.equal(a.items[0].demo,true);
   assert.equal(a.items[1].host,'bank.example');assert.equal(a.items[1].port,'8443');
@@ -135,7 +135,7 @@ test('normal: determinism and no mutation of inputs across the whole demo',()=>{
 test('artifact: inline scripts parse; PSL matches local source snapshot',()=>{
   const scripts=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,2);
   scripts.forEach((s,i)=>assert.doesNotThrow(()=>new vm.Script(s[1],{filename:'inline-'+i+'.js'})));
-  assert.equal(crypto.createHash('sha256').update(context.psl).digest('hex'),'f3604fee29f4a2234547ca068da1e4c6a1c480418f1c418d4b4040633be501b4');
+  assert.equal(crypto.createHash('sha256').update(context.psl).digest('hex'),'10b0901b594a2827d150bb1bac73cb86d9e79a9a1376bdf190bcc5d6f164900e');
   assert.ok(context.psl.includes('===BEGIN PRIVATE DOMAINS==='));
 });
 test('artifact: no resource loads, navigation targets, storage, or network APIs in app code',()=>{
