@@ -19,8 +19,20 @@ const check = (text,dismissed=[]) => core('analyze',{text,dismissed});
 
 test('normal: fake password demo has exactly the six ordered steps',()=>{
   const p=plan();assert.equal(p.ok,true);
-  assert.deepEqual(p.steps.map(x=>x.id),['close','password','sessions','reused','protection','review']);
-  assert.ok(p.steps.every(x=>x.action&&x.why&&x.source==='[source to verify]'));
+  assert.deepEqual(p.steps.map(x=>x.id),['bank-conditional','password','recovery','reused','protection','report']);
+  const sources={
+    ncsc:{agency:'UK NCSC',url:'https://www.ncsc.gov.uk/section/respond-recover/phishing'},
+    ftc:{agency:'US FTC',url:'https://consumer.ftc.gov/articles/what-do-if-you-were-scammed'},
+    ipa:{agency:'Japan IPA',url:'https://www.ipa.go.jp/security/anshin/attention/2026/mgdayori20261026.html'},
+    npa:{agency:'Japan National Police Agency',url:'https://www.npa.go.jp/bureau/cyber/countermeasures/phishing.html'},
+  };
+  const expectedSources=[['ncsc'],['ftc','ipa','npa'],['ftc'],['ftc','ncsc','ipa','npa'],['ftc','ipa'],['npa']];
+  p.steps.forEach((s,i)=>{
+    const refs=expectedSources[i].map(key=>sources[key]);
+    assert.ok(s.action&&s.why);
+    assert.deepEqual(s.sources,refs);
+    assert.equal(s.source,refs.map(x=>x.agency+' — '+x.url).join('; '));
+  });
   let state=stateOf(p);const seen=[];
   while(state.currentId){seen.push(state.currentId);state=change(state,'done');}
   assert.deepEqual(seen,p.steps.map(x=>x.id));
@@ -30,39 +42,52 @@ test('normal: fake password demo has exactly the six ordered steps',()=>{
   assert.equal((summary.match(/^DONE —/gm)||[]).length,6);
 });
 test('normal: second screen matches the selected desktop/mobile reference',()=>{
-  const state=change(stateOf(plan()),'done');assert.equal(state.currentId,'password');assert.equal(state.statuses.close,'done');
+  const state=change(stateOf(plan()),'done');assert.equal(state.currentId,'password');assert.equal(state.statuses['bank-conditional'],'done');
   assert.equal(state.steps.find(x=>x.id===state.currentId).title,'Change the exposed password');
 });
 test('normal: skip, undo, reopen, and incomplete summaries are distinct',()=>{
   const p=plan(),initial=stateOf(p),skipped=change(initial,'skipped');
-  assert.equal(initial.statuses.close,'pending');assert.equal(skipped.statuses.close,'skipped');
+  assert.equal(initial.statuses['bank-conditional'],'pending');assert.equal(skipped.statuses['bank-conditional'],'skipped');
   const text=core('summary',{answers:answer(),state:skipped,unknowns:p.unknowns});
-  assert.match(text,/SKIPPED — not completed — Close/);assert.match(text,/PENDING — Change/);
+  assert.match(text,/SKIPPED — not completed — If you also shared banking details/);assert.match(text,/PENDING — Change/);
   assert.deepEqual(change(skipped,'undo').statuses,initial.statuses);
-  const reopened=change(skipped,'reopen','close');assert.equal(reopened.currentId,'close');assert.equal(reopened.statuses.close,'pending');
-  assert.equal(change(reopened,'undo').statuses.close,'skipped');
+  const reopened=change(skipped,'reopen','bank-conditional');assert.equal(reopened.currentId,'bank-conditional');assert.equal(reopened.statuses['bank-conditional'],'pending');
+  assert.equal(change(reopened,'undo').statuses['bank-conditional'],'skipped');
 });
-test('normal: bank, IT, code, and recovery precede password changes',()=>{
+test('normal: bank contact precedes password actions, recovery is conditional, and reuse changes are immediate',()=>{
   const p=plan({details:['password','bank','code'],accounts:['school','work'],locked:true});
-  assert.deepEqual(p.steps.slice(0,6).map(x=>x.id),['close','bank','it','code','recovery','password']);
-  assert.match(p.steps[1].action,/number on your card/);assert.match(p.steps[2].action,/known school or work/);
+  assert.deepEqual(p.steps.map(x=>x.id),['bank','transactions','statements','refund','password','recovery','reused','protection','report']);
+  assert.match(p.steps[0].action,/Contact your card issuer or bank now/);
+  assert.match(p.steps[4].condition,/If you can sign in/);assert.match(p.steps[5].condition,/If you cannot sign in/);
+  assert.match(p.steps[5].why,/alternative to a password change/);
+  assert.match(p.steps[6].why,/Continue immediately/);assert.match(p.steps[6].why,/Do not wait for recovery/);
+  assert.ok(p.unknowns.some(x=>x.includes('Organization-specific requirements: Unknown')));
+  assert.ok(p.unknowns.some(x=>x.includes('does not establish a one-time-code-specific response sequence')));
+  const passwordOnly=plan();
+  assert.deepEqual(passwordOnly.steps.slice(0,2).map(x=>x.id),['bank-conditional','password']);
+  assert.equal(passwordOnly.steps[0].condition,'Only if banking details were also shared');
+  assert.match(passwordOnly.steps[0].action,/contact your bank immediately/);
 });
 test('normal: click-only and personal-info branches have applicable actions',()=>{
   const p=plan({entry:'clicked',details:['nothing'],reuse:'na'});
-  assert.deepEqual(p.steps.map(x=>x.id),['close','device','review']);
-  assert.match(p.steps[1].why,/cannot detect infection/);
+  assert.deepEqual(p.steps.map(x=>x.id),['alerts','close']);
+  assert.match(p.steps[0].condition,/Only if nothing was entered, downloaded, or installed/);
+  assert.match(p.steps[0].why,/not a safety guarantee/);
+  assert.equal(p.steps[1].condition,'Only if a fake warning appeared');
   const p2=plan({details:['personal_info'],reuse:'na'});
-  assert.ok(p2.steps.some(s=>s.id==='personal'));assert.ok(!p2.steps.some(s=>s.id==='password'));
+  assert.deepEqual(p2.steps.map(s=>s.id),['personal']);assert.ok(!p2.steps.some(s=>s.id==='password'));
+  assert.equal(p2.steps[0].title,'Support differs by country');
 });
 test('normal: changed answers preserve only identical meanings and current step',()=>{
-  let previous=change(change(stateOf(plan()),'done'),'done'); // current: sessions
+  let previous=change(change(stateOf(plan()),'done'),'done'); // current: recovery
   const next=core('reconcile',{previous,steps:plan({reuse:'no'}).steps});
-  assert.equal(next.statuses.close,'done');assert.equal(next.statuses.password,'done');assert.equal(next.currentId,'sessions');
+  assert.equal(next.statuses['bank-conditional'],'done');assert.equal(next.statuses.password,'done');assert.equal(next.currentId,'recovery');
   assert.deepEqual(next.changes.removed,['Change reused passwords']);assert.equal(next.history.length,0);
   const scoped=core('reconcile',{previous,steps:plan({accounts:['work']}).steps});
-  assert.equal(scoped.statuses.close,'done');assert.equal(scoped.statuses.password,'pending');
-  assert.equal(scoped.currentId,'it');
-  assert.ok(scoped.changes.reset.includes('Change password'));assert.ok(scoped.changes.added.includes('Contact your IT desk'));
+  assert.equal(scoped.statuses['bank-conditional'],'pending');assert.equal(scoped.statuses.password,'pending');
+  assert.equal(scoped.currentId,'bank-conditional');
+  assert.deepEqual(scoped.changes.reset,['If you also shared banking details','Change the exposed password','If you cannot sign in','Change reused passwords','Add sign-in protection','Report the phishing incident']);
+  assert.deepEqual(scoped.changes.added,[]);
 });
 test('normal: multiple URLs, user-info, ports, and demo domain are separated',()=>{
   const a=check('https://delivery.example.parcel-check.test/confirm https://name:secret'+String.fromCharCode(64)+'bank.example:8443/path?token=SECRET');
@@ -85,7 +110,8 @@ test('normal: IP addresses, alternate IPv4 form, IPv6 and IDN receive evidence',
 test('ambiguous: unknown answers remain Unknown and prioritize clarification',()=>{
   const p=plan({details:['unknown'],accounts:['unknown'],reuse:'na'});
   assert.equal(p.ok,true);assert.equal(p.status,'Unknown');
-  assert.deepEqual(p.steps.map(x=>x.id),['close','clarify','device','review']);
+  assert.deepEqual(p.steps.map(x=>x.id),['clarify']);
+  assert.equal(p.steps[0].title,'The applicable response is unknown');
   assert.ok(p.unknowns.some(x=>x.includes('Details shared')));
   const reused=plan({reuse:'unknown'});assert.ok(reused.steps.some(x=>x.id==='reused'));assert.ok(reused.unknowns.some(x=>x.includes('Password reuse')));
 });

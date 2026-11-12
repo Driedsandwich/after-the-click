@@ -70,15 +70,16 @@ test('UI wiring: three questions validate, enforce exclusive choices, and create
   h.select('details','password');assert.equal(h.evaluate('app.draft.details.join()'),'password');
   h.select('accounts','unknown');h.select('accounts','school');assert.equal(h.evaluate('app.draft.accounts.join()'),'school');
   h.select('reuse','yes');h.submit();assert.equal(h.evaluate('app.screen'),'plan');
-  assert.equal(h.evaluate('app.state.steps[1].id'),'it');assert.ok(h.evaluate('app.state.steps.some(x=>x.id==="device")'));
+  assert.equal(h.evaluate('app.state.steps[1].id'),'password');
+  assert.equal(h.evaluate('app.state.steps.map(x=>x.id).join()'),'bank-conditional,password,recovery,reused,protection,report');
 });
 test('UI wiring: skip/undo, answer edit/cancel, and new bank priority preserve relevant progress',()=>{
   const h=harness();h.demo.listeners.click();h.click('skip');assert.match(h.root.innerHTML,/was skipped, not completed/);
-  h.click('undo');assert.equal(h.evaluate('app.state.currentId'),'close');h.click('done');h.click('done');
+  h.click('undo');assert.equal(h.evaluate('app.state.currentId'),'bank-conditional');h.click('done');h.click('done');
   h.click('edit');h.select('details','bank');h.click('cancel-answers');assert.equal(h.evaluate('app.answers.details.join()'),'password');
   h.click('edit');h.select('details','bank');h.submit();
   assert.equal(h.evaluate('app.state.currentId'),'bank');assert.equal(h.evaluate('app.state.statuses.password'),'done');
-  assert.match(h.root.innerHTML,/1 added/);assert.match(h.root.innerHTML,/Now showing: Contact your bank/);
+  assert.match(h.root.innerHTML,/4 added; 1 removed; 0 reset because their context changed/);assert.match(h.root.innerHTML,/Now showing: Contact your bank/);
 });
 test('UI wiring: unchecked password switches reuse to Not applicable',()=>{
   const h=harness();h.click('choose','typed');h.select('details','password');h.select('reuse','yes');h.select('details','nothing');
