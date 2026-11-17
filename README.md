@@ -4,7 +4,9 @@
 
 After the Click is an offline first-aid checklist and link-text inspector for a student hackathon. It uses categories, never requests passwords or account numbers, and shows uncertainty rather than declaring a link or device safe. Use fictional data for demonstrations.
 
-**Status: prototype.** All 59 tests pass (`npm test`), covering the shared core, CLI/MCP contracts, UI event handling, and build consistency. The suite passes on Node v22 and v26. UI tests use DOM doubles; they do not check browser layout, native clipboard permissions, or touch gestures. Test results: [before the copy-text change](RESULTS_BEFORE.txt) (57 pass, 1 fail) and [after](RESULTS_AFTER.txt) (58 pass, 0 fail).
+**Status: prototype.** All 59 tests pass (`npm test`), covering the shared core, CLI/MCP contracts, UI event handling, and build consistency. The suite passes on Node v22 and v26. UI tests use DOM doubles; they do not check browser layout, native clipboard permissions, or touch gestures. Test results: [before the copy-text change](RESULTS_BEFORE.txt) (58 tests: 57 pass, 1 fail, from a regression test written before the change) and [after](RESULTS_AFTER.txt) (59 tests, all pass; a second regression test covers the message shown when automatic copy fails).
+
+On November 17, 2026, the current `index.html` was opened in a headless Chromium browser at 1440 px and 390 px widths. The fake delivery demo was followed through six steps to the summary, and both manual-copy messages appeared, with no network requests and no page errors. iPhone Safari and real clipboard permissions have not been checked.
 
 This is a first-aid checklist, not a replacement for your bank, school IT desk, or the police. Step wording and conditions come from the public guidance listed below. Step numbers are editorial presentation order, not one sequence agreed by all agencies. The sources do not establish a complete combined order for multiple simultaneous incidents.
 
