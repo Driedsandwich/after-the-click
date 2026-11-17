@@ -1,625 +1,372 @@
-Final validation; 2026-11-13; Node v22.23.4.
-Original tests unchanged and included; unresolved guidance conflicts are failures, not skips.
-Before: 28 existing passed; 15 new interface tests failed before implementation.
-After: 15 interface + 14 supplementary + 28 existing = 57 tests; 48 passed, 9 failed.
-
-
-Command: npm run build
-Exit code: 0
-
-> after-the-click@1.0.0 build
-> node scripts/build.mjs
-
-Built index.html from core.mjs.
-
-
+After UI and README changes and standalone HTML build (re-run on the Mac after adding the failed-automatic-copy wording test).
 Command: npm test
-Exit code: 1
+Runtime: v22.22.3
+
 
 > after-the-click@1.0.0 test
 > node --test tests/*.test.cjs tests/*.test.mjs
 
 TAP version 13
 # Subtest: normal: fake password demo has exactly the six ordered steps
-not ok 1 - normal: fake password demo has exactly the six ordered steps
+ok 1 - normal: fake password demo has exactly the six ordered steps
   ---
-  duration_ms: 4.411112
+  duration_ms: 8.102583
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:20:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly deep-equal:
-    + actual - expected
-    
-      [
-    +   'bank-conditional',
-    -   'close',
-        'password',
-    +   'recovery',
-    -   'sessions',
-        'reused',
-        'protection',
-    +   'report'
-    -   'review'
-      ]
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-    0: 'close'
-    1: 'password'
-    2: 'sessions'
-    3: 'reused'
-    4: 'protection'
-    5: 'review'
-  actual:
-    0: 'bank-conditional'
-    1: 'password'
-    2: 'recovery'
-    3: 'reused'
-    4: 'protection'
-    5: 'report'
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:22:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.start (node:internal/test_runner/test:944:17)
-    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
   ...
 # Subtest: normal: second screen matches the selected desktop/mobile reference
-not ok 2 - normal: second screen matches the selected desktop/mobile reference
+ok 2 - normal: second screen matches the selected desktop/mobile reference
   ---
-  duration_ms: 1.043959
+  duration_ms: 1.893917
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:32:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + undefined
-    - 'done'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'done'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:33:94)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
   ...
 # Subtest: normal: skip, undo, reopen, and incomplete summaries are distinct
-not ok 3 - normal: skip, undo, reopen, and incomplete summaries are distinct
+ok 3 - normal: skip, undo, reopen, and incomplete summaries are distinct
   ---
-  duration_ms: 0.45914
+  duration_ms: 2.510167
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:36:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + undefined
-    - 'pending'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'pending'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:38:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
-# Subtest: normal: bank, IT, code, and recovery precede password changes
-not ok 4 - normal: bank, IT, code, and recovery precede password changes
+# Subtest: normal: bank contact precedes password actions, recovery is conditional, and reuse changes are immediate
+ok 4 - normal: bank contact precedes password actions, recovery is conditional, and reuse changes are immediate
   ---
-  duration_ms: 0.616487
+  duration_ms: 1.592875
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:45:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly deep-equal:
-    + actual - expected
-    
-      [
-    -   'close',
-        'bank',
-    +   'transactions',
-    +   'statements',
-    +   'refund',
-    +   'password',
-    -   'it',
-    -   'code',
-        'recovery',
-    -   'password'
-      ]
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-    0: 'close'
-    1: 'bank'
-    2: 'it'
-    3: 'code'
-    4: 'recovery'
-    5: 'password'
-  actual:
-    0: 'bank'
-    1: 'transactions'
-    2: 'statements'
-    3: 'refund'
-    4: 'password'
-    5: 'recovery'
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:47:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: normal: click-only and personal-info branches have applicable actions
-not ok 5 - normal: click-only and personal-info branches have applicable actions
+ok 5 - normal: click-only and personal-info branches have applicable actions
   ---
-  duration_ms: 0.504114
+  duration_ms: 0.531375
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:50:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly deep-equal:
-    + actual - expected
-    
-      [
-    +   'alerts',
-        'close',
-    -   'device',
-    -   'review'
-      ]
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-    0: 'close'
-    1: 'device'
-    2: 'review'
-  actual:
-    0: 'alerts'
-    1: 'close'
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:52:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: normal: changed answers preserve only identical meanings and current step
-not ok 6 - normal: changed answers preserve only identical meanings and current step
+ok 6 - normal: changed answers preserve only identical meanings and current step
   ---
-  duration_ms: 0.823246
+  duration_ms: 1.6235
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:57:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + undefined
-    - 'done'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'done'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:60:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: normal: multiple URLs, user-info, ports, and demo domain are separated
 ok 7 - normal: multiple URLs, user-info, ports, and demo domain are separated
   ---
-  duration_ms: 1.933897
+  duration_ms: 3.91
   type: 'test'
   ...
 # Subtest: normal: bundled PSL handles multi-label, private, wildcard and exception rules
 ok 8 - normal: bundled PSL handles multi-label, private, wildcard and exception rules
   ---
-  duration_ms: 0.631899
+  duration_ms: 0.613125
   type: 'test'
   ...
 # Subtest: normal: IP addresses, alternate IPv4 form, IPv6 and IDN receive evidence
 ok 9 - normal: IP addresses, alternate IPv4 form, IPv6 and IDN receive evidence
   ---
-  duration_ms: 0.893529
+  duration_ms: 2.253834
   type: 'test'
   ...
 # Subtest: ambiguous: unknown answers remain Unknown and prioritize clarification
-not ok 10 - ambiguous: unknown answers remain Unknown and prioritize clarification
+ok 10 - ambiguous: unknown answers remain Unknown and prioritize clarification
   ---
-  duration_ms: 0.70487
+  duration_ms: 1.646291
   type: 'test'
-  location: '<repo>/tests/core.test.cjs:85:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly deep-equal:
-    + actual - expected
-    
-      [
-    -   'close',
-        'clarify',
-    -   'device',
-    -   'review'
-      ]
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-    0: 'close'
-    1: 'clarify'
-    2: 'device'
-    3: 'review'
-  actual:
-    0: 'clarify'
-  operator: 'deepStrictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/core.test.cjs:88:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: ambiguous: no flags is never a safe verdict; short links remain Unknown
 ok 11 - ambiguous: no flags is never a safe verdict; short links remain Unknown
   ---
-  duration_ms: 0.473695
+  duration_ms: 0.858
   type: 'test'
   ...
 # Subtest: ambiguous: a warning can be dismissed and restored without granting safety
 ok 12 - ambiguous: a warning can be dismissed and restored without granting safety
   ---
-  duration_ms: 0.27015
+  duration_ms: 0.233834
   type: 'test'
   ...
 # Subtest: ambiguous: message size and URL count caps cannot produce a no-flags claim
 ok 13 - ambiguous: message size and URL count caps cannot produce a no-flags claim
   ---
-  duration_ms: 0.366594
+  duration_ms: 0.234125
   type: 'test'
   ...
 # Subtest: failure: malformed, unsupported, and ambiguous URL syntax is Unknown
 ok 14 - failure: malformed, unsupported, and ambiguous URL syntax is Unknown
   ---
-  duration_ms: 0.397706
+  duration_ms: 0.274333
   type: 'test'
   ...
 # Subtest: failure: inconsistent or corrupt answers cannot create a reassuring plan
 ok 15 - failure: inconsistent or corrupt answers cannot create a reassuring plan
   ---
-  duration_ms: 0.480248
+  duration_ms: 0.230959
   type: 'test'
   ...
 # Subtest: failure: unrecognized transition cannot mark a step done
 ok 16 - failure: unrecognized transition cannot mark a step done
   ---
-  duration_ms: 0.720683
+  duration_ms: 0.792792
   type: 'test'
   ...
 # Subtest: normal: summary is categorical, contains uncertainty, and excludes extra input
 ok 17 - normal: summary is categorical, contains uncertainty, and excludes extra input
   ---
-  duration_ms: 0.528694
+  duration_ms: 0.437208
   type: 'test'
   ...
 # Subtest: normal: determinism and no mutation of inputs across the whole demo
 ok 18 - normal: determinism and no mutation of inputs across the whole demo
   ---
-  duration_ms: 0.42771
+  duration_ms: 1.359666
   type: 'test'
   ...
 # Subtest: artifact: inline scripts parse; PSL matches local source snapshot
 ok 19 - artifact: inline scripts parse; PSL matches local source snapshot
   ---
-  duration_ms: 3.151855
+  duration_ms: 4.430125
   type: 'test'
   ...
 # Subtest: artifact: no resource loads, navigation targets, storage, or network APIs in app code
 ok 20 - artifact: no resource loads, navigation targets, storage, or network APIs in app code
   ---
-  duration_ms: 1.405163
+  duration_ms: 1.756333
   type: 'test'
   ...
 # Subtest: artifact: specified text colors meet WCAG AA normal-text contrast
 ok 21 - artifact: specified text colors meet WCAG AA normal-text contrast
   ---
-  duration_ms: 0.485747
+  duration_ms: 0.33525
   type: 'test'
   ...
 # Subtest: CLI plan: typed_password matches core
 ok 22 - CLI plan: typed_password matches core
   ---
-  duration_ms: 124.699963
+  duration_ms: 150.273333
   type: 'test'
   ...
 # Subtest: CLI plan: typed_card matches core
 ok 23 - CLI plan: typed_card matches core
   ---
-  duration_ms: 83.859513
+  duration_ms: 139.724792
   type: 'test'
   ...
 # Subtest: CLI plan: sent_id_photo matches core
 ok 24 - CLI plan: sent_id_photo matches core
   ---
-  duration_ms: 81.127362
+  duration_ms: 100.071167
   type: 'test'
   ...
 # Subtest: CLI plan: installed_file matches core
 ok 25 - CLI plan: installed_file matches core
   ---
-  duration_ms: 72.082623
+  duration_ms: 80.234083
   type: 'test'
   ...
 # Subtest: CLI plan: clicked_only matches core
 ok 26 - CLI plan: clicked_only matches core
   ---
-  duration_ms: 71.440165
+  duration_ms: 88.810375
   type: 'test'
   ...
 # Subtest: CLI dissect: file and stdin match core and omit URL secrets
 ok 27 - CLI dissect: file and stdin match core and omit URL secrets
   ---
-  duration_ms: 198.61552
+  duration_ms: 329.900917
   type: 'test'
   ...
 # Subtest: CLI: invalid command, options, categories, duplicate and missing arguments return JSON errors
 ok 28 - CLI: invalid command, options, categories, duplicate and missing arguments return JSON errors
   ---
-  duration_ms: 471.467377
+  duration_ms: 1947.279459
   type: 'test'
   ...
 # Subtest: CLI: file errors do not echo private filenames
 ok 29 - CLI: file errors do not echo private filenames
   ---
-  duration_ms: 61.777314
+  duration_ms: 123.014667
   type: 'test'
   ...
 # Subtest: CLI: empty or oversized text is an error; unsupported links remain Unknown
 ok 30 - CLI: empty or oversized text is an error; unsupported links remain Unknown
   ---
-  duration_ms: 181.695472
+  duration_ms: 389.412917
   type: 'test'
   ...
 # Subtest: CLI: readable output and help are available
 ok 31 - CLI: readable output and help are available
   ---
-  duration_ms: 118.19171
+  duration_ms: 263.285959
   type: 'test'
   ...
 # Subtest: MCP: handshake, version negotiation, ping and schemas
 ok 32 - MCP: handshake, version negotiation, ping and schemas
   ---
-  duration_ms: 119.582919
+  duration_ms: 185.3685
   type: 'test'
   ...
 # Subtest: MCP: both tool results match the shared core and CLI
 ok 33 - MCP: both tool results match the shared core and CLI
   ---
-  duration_ms: 62.679804
+  duration_ms: 89.92325
   type: 'test'
   ...
 # Subtest: MCP: invalid tool arguments return tool errors without echoing input
 ok 34 - MCP: invalid tool arguments return tool errors without echoing input
   ---
-  duration_ms: 60.818115
+  duration_ms: 83.718917
   type: 'test'
   ...
 # Subtest: MCP: protocol errors, unknown tools, and notifications keep the session usable
 ok 35 - MCP: protocol errors, unknown tools, and notifications keep the session usable
   ---
-  duration_ms: 60.47748
+  duration_ms: 73.807917
   type: 'test'
   ...
 # Subtest: MCP: rejects tool use before initialized and malformed initialize
 ok 36 - MCP: rejects tool use before initialized and malformed initialize
   ---
-  duration_ms: 61.853946
+  duration_ms: 84.602584
   type: 'test'
   ...
 # Subtest: UI wiring: initial choices and one-button demo traverse all six screens to summary
 ok 37 - UI wiring: initial choices and one-button demo traverse all six screens to summary
   ---
-  duration_ms: 47.19579
+  duration_ms: 53.61375
   type: 'test'
   ...
 # Subtest: UI wiring: three questions validate, enforce exclusive choices, and create a plan
-not ok 38 - UI wiring: three questions validate, enforce exclusive choices, and create a plan
+ok 38 - UI wiring: three questions validate, enforce exclusive choices, and create a plan
   ---
-  duration_ms: 39.072647
+  duration_ms: 26.656
   type: 'test'
-  location: '<repo>/tests/ui.test.cjs:67:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    
-    'password' !== 'it'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'it'
-  actual: 'password'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/ui.test.cjs:73:10)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
   ...
 # Subtest: UI wiring: skip/undo, answer edit/cancel, and new bank priority preserve relevant progress
-not ok 39 - UI wiring: skip/undo, answer edit/cancel, and new bank priority preserve relevant progress
+ok 39 - UI wiring: skip/undo, answer edit/cancel, and new bank priority preserve relevant progress
   ---
-  duration_ms: 26.735561
+  duration_ms: 47.410667
   type: 'test'
-  location: '<repo>/tests/ui.test.cjs:75:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + 'bank-conditional'
-    - 'close'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'close'
-  actual: 'bank-conditional'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (<repo>/tests/ui.test.cjs:77:26)
-    Test.runInAsyncScope (node:async_hooks:214:14)
-    Test.run (node:internal/test_runner/test:1047:25)
-    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
-    Test.postRun (node:internal/test_runner/test:1173:19)
-    Test.run (node:internal/test_runner/test:1101:12)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: UI wiring: unchecked password switches reuse to Not applicable
 ok 40 - UI wiring: unchecked password switches reuse to Not applicable
   ---
-  duration_ms: 25.26942
+  duration_ms: 22.147125
   type: 'test'
   ...
 # Subtest: UI wiring: checker sample, dismissal, and restoration retain explanations
 ok 41 - UI wiring: checker sample, dismissal, and restoration retain explanations
   ---
-  duration_ms: 31.66479
+  duration_ms: 18.968666
   type: 'test'
   ...
 # Subtest: UI wiring: pasted markup is escaped, changed text invalidates old results, clear removes state
 ok 42 - UI wiring: pasted markup is escaped, changed text invalidates old results, clear removes state
   ---
-  duration_ms: 26.32048
+  duration_ms: 17.632042
   type: 'test'
   ...
 # Subtest: UI wiring: unavailable or rejected clipboard selects text; successful copy reports only copying
 ok 43 - UI wiring: unavailable or rejected clipboard selects text; successful copy reports only copying
   ---
-  duration_ms: 91.10923
+  duration_ms: 89.75575
+  type: 'test'
+  ...
+# Subtest: UI wiring: manual summary selection explains copying on computers and phones
+ok 44 - UI wiring: manual summary selection explains copying on computers and phones
+  ---
+  duration_ms: 54.09225
+  type: 'test'
+  ...
+# Subtest: UI wiring: failed automatic copy explains copying on computers and phones
+ok 45 - UI wiring: failed automatic copy explains copying on computers and phones
+  ---
+  duration_ms: 40.086208
   type: 'test'
   ...
 # Subtest: build: embedded core is exact generated module; rerunning build is idempotent
-ok 44 - build: embedded core is exact generated module; rerunning build is idempotent
+ok 46 - build: embedded core is exact generated module; rerunning build is idempotent
   ---
-  duration_ms: 59.441719
+  duration_ms: 90.030166
   type: 'test'
   ...
 # Subtest: artifact: original PSL, license declaration and stylesheet are unchanged
-ok 45 - artifact: original PSL, license declaration and stylesheet are unchanged
+ok 47 - artifact: original PSL, license declaration and stylesheet are unchanged
   ---
-  duration_ms: 1.981414
+  duration_ms: 1.650417
   type: 'test'
   ...
 # Subtest: artifact: no provisional source markers and small escaped source display
-ok 46 - artifact: no provisional source markers and small escaped source display
+ok 48 - artifact: no provisional source markers and small escaped source display
   ---
-  duration_ms: 3.983672
+  duration_ms: 4.025042
   type: 'test'
   ...
 # Subtest: guidance: password conditions and editorial order are explicit
-ok 47 - guidance: password conditions and editorial order are explicit
+ok 49 - guidance: password conditions and editorial order are explicit
   ---
-  duration_ms: 2.045204
+  duration_ms: 1.564666
   type: 'test'
   ...
 # Subtest: guidance: click-only does not mandate bank contact or antivirus
-ok 48 - guidance: click-only does not mandate bank contact or antivirus
+ok 50 - guidance: click-only does not mandate bank contact or antivirus
   ---
-  duration_ms: 0.405581
+  duration_ms: 0.308375
   type: 'test'
   ...
 # Subtest: guidance: card contact precedes monitoring; refunds are conditional
-ok 49 - guidance: card contact precedes monitoring; refunds are conditional
+ok 51 - guidance: card contact precedes monitoring; refunds are conditional
   ---
-  duration_ms: 0.424641
+  duration_ms: 0.371958
   type: 'test'
   ...
 # Subtest: guidance: identity documents do not select country-specific programs
-ok 50 - guidance: identity documents do not select country-specific programs
+ok 52 - guidance: identity documents do not select country-specific programs
   ---
-  duration_ms: 0.404545
+  duration_ms: 0.285
   type: 'test'
   ...
 # Subtest: guidance: installed-file response distinguishes access and unavailable scans
-ok 51 - guidance: installed-file response distinguishes access and unavailable scans
+ok 53 - guidance: installed-file response distinguishes access and unavailable scans
   ---
-  duration_ms: 0.287053
+  duration_ms: 0.14875
   type: 'test'
   ...
 # Subtest: core: browser and Node share every categorical combination and preserve input
-ok 52 - core: browser and Node share every categorical combination and preserve input
+ok 54 - core: browser and Node share every categorical combination and preserve input
   ---
-  duration_ms: 42.287196
+  duration_ms: 34.963083
   type: 'test'
   ...
 # Subtest: state: sourced guidance supports skip, undo, reconcile, completion and summary
-ok 53 - state: sourced guidance supports skip, undo, reconcile, completion and summary
+ok 55 - state: sourced guidance supports skip, undo, reconcile, completion and summary
   ---
-  duration_ms: 1.701426
+  duration_ms: 2.961083
   type: 'test'
   ...
 # Subtest: schemas: every scenario and analysis result meets its published output schema
-ok 54 - schemas: every scenario and analysis result meets its published output schema
+ok 56 - schemas: every scenario and analysis result meets its published output schema
   ---
-  duration_ms: 3.428292
+  duration_ms: 3.149458
   type: 'test'
   ...
 # Subtest: runtime: no network modules or APIs; pure core has no platform imports or DOM access
-ok 55 - runtime: no network modules or APIs; pure core has no platform imports or DOM access
+ok 57 - runtime: no network modules or APIs; pure core has no platform imports or DOM access
   ---
-  duration_ms: 2.723095
+  duration_ms: 2.701125
   type: 'test'
   ...
 # Subtest: MCP: oversized frames and truncated EOF produce bounded protocol errors
-ok 56 - MCP: oversized frames and truncated EOF produce bounded protocol errors
+ok 58 - MCP: oversized frames and truncated EOF produce bounded protocol errors
   ---
-  duration_ms: 71.370885
+  duration_ms: 146.687959
   type: 'test'
   ...
 # Subtest: MCP: responds on a live pipe with split UTF-8 frames before EOF
-ok 57 - MCP: responds on a live pipe with split UTF-8 frames before EOF
+ok 59 - MCP: responds on a live pipe with split UTF-8 frames before EOF
   ---
-  duration_ms: 75.39398
+  duration_ms: 92.713709
   type: 'test'
   ...
-1..57
-# tests 57
+1..59
+# tests 59
 # suites 0
-# pass 48
-# fail 9
+# pass 59
+# fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1907.837966
+# duration_ms 4299.499042

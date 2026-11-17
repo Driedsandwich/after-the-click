@@ -109,3 +109,26 @@ test('UI wiring: unavailable or rejected clipboard selects text; successful copy
   let copied='';const h=harness({writeText:async text=>{copied=text;}});h.demo.listeners.click();h.click('summary');await h.evaluate('copySummary()');
   assert.match(copied,/FIRST-AID SUMMARY/);assert.match(h.root.querySelector('#copy-status').textContent,/Nothing was sent/);
 });
+
+test('UI wiring: manual summary selection explains copying on computers and phones',async()=>{
+  for(const clipboard of [undefined,{writeText:async()=>{throw Error('Denied');}}]){
+    const h=harness(clipboard);h.demo.listeners.click();h.click('summary');
+    const field=h.root.querySelector('#summary-text'),summary=field.value;
+    await h.evaluate('copySummary()');
+    h.click('select-summary');
+    assert.equal(field.focused,true);
+    assert.equal(field.selected,true);
+    assert.equal(field.value,summary);
+    assert.equal(h.root.querySelector('#copy-status').textContent,
+      "Text selected. Copy it with your device's Copy command — on a phone, tap and hold the selected text, then tap Copy.");
+  }
+});
+
+test('UI wiring: failed automatic copy explains copying on computers and phones',async()=>{
+  for(const clipboard of [undefined,{writeText:async()=>{throw Error('Denied');}}]){
+    const h=harness(clipboard);h.demo.listeners.click();h.click('summary');
+    await h.evaluate('copySummary()');
+    assert.equal(h.root.querySelector('#copy-status').textContent,
+      "Automatic copy is unavailable. Text selected: copy it with your device's Copy command — on a phone, tap and hold the selected text, then tap Copy.");
+  }
+});

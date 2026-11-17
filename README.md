@@ -4,15 +4,26 @@
 
 After the Click is an offline first-aid checklist and link-text inspector for a student hackathon. It uses categories, never requests passwords or account numbers, and shows uncertainty rather than declaring a link or device safe. Use fictional data for demonstrations.
 
-**Status: prototype.** All 57 tests pass (`npm test`), including the CLI/MCP contract tests and nine earlier tests that were updated to the agency-sourced guidance (no tests were removed). See [IMPLEMENTATION_NOTES.md](IMPLEMENTATION_NOTES.md) and [TEST_UPDATES.md](TEST_UPDATES.md).
+**Status: prototype.** All 59 tests pass (`npm test`), covering the shared core, CLI/MCP contracts, UI event handling, and build consistency. The suite passes on Node v22 and v26. UI tests use DOM doubles; they do not check browser layout, native clipboard permissions, or touch gestures. Test results: [before the copy-text change](RESULTS_BEFORE.txt) (57 pass, 1 fail) and [after](RESULTS_AFTER.txt) (58 pass, 0 fail).
 
-This is a first-aid checklist, not a replacement for your bank, school IT desk, or the police. Step wording and conditions come from public guidance by government agencies (UK NCSC, US FTC, US CISA, Japan IPA, Japan National Police Agency, Australia Scamwatch and Moneysmart, EU ENISA). Each quoted line was checked against the original page on November 13, 2026; a page whose text could not be retrieved is not used. Step numbers are editorial presentation order, not one sequence agreed by all agencies. Multiple simultaneous incidents do not have a complete verified combined order in the supplied material.
+This is a first-aid checklist, not a replacement for your bank, school IT desk, or the police. Step wording and conditions come from the public guidance listed below. Step numbers are editorial presentation order, not one sequence agreed by all agencies. The sources do not establish a complete combined order for multiple simultaneous incidents.
+
+## Public guidance sources
+
+- [UK National Cyber Security Centre (NCSC): phishing response and recovery](https://www.ncsc.gov.uk/section/respond-recover/phishing)
+- [US Federal Trade Commission (FTC): what to do if you were scammed](https://consumer.ftc.gov/articles/what-do-if-you-were-scammed)
+- [Japan Information-technology Promotion Agency (IPA): phishing guidance](https://www.ipa.go.jp/security/anshin/attention/2026/mgdayori20261026.html)
+- [Japan IPA: fake security warnings](https://www.ipa.go.jp/security/anshin/attention/2018/mgdayori20180718.html)
+- [Japan National Police Agency: phishing countermeasures](https://www.npa.go.jp/bureau/cyber/countermeasures/phishing.html)
+- [Japan Consumer Affairs Agency: credit-card misuse precautions](https://www.caa.go.jp/policies/policy/consumer_policy/caution/caution_039)
+- [Australia Scamwatch: what to do if you have been scammed](https://www.scamwatch.gov.au/stop-check-protect/what-to-do-if-youve-been-scammed)
+- [Australia ASIC / Moneysmart: what to do if you have been scammed](https://moneysmart.gov.au/check-and-report-scams/what-to-do-if-youve-been-scammed)
 
 ## Try it and build
 
 Open the committed `index.html` and press **Try fake delivery demo**. It works as one local file with no external resources, installation, or server.
 
-Node 22 is required for development and the agent interfaces. No package installation is needed; there are no dependencies.
+Node 22 or newer is required for development and the agent interfaces. No package installation is needed; there are no dependencies.
 
 ```sh
 npm run build
@@ -24,7 +35,7 @@ node --test tests/*.test.cjs tests/*.test.mjs
 
 `core.mjs` is the sole source of calculations, guidance, tool argument validation, and tool schemas. It is pure JavaScript with no DOM, filesystem, network, or environment access. `scripts/build.mjs` removes its explicit export list and embeds the same code between `<!-- core:start -->` and `<!-- core:end -->` in `index.html`. The build preserves everything outside those markers. Commit the rebuilt HTML whenever the core changes. Tests check the generated block for exact equality, build repeatability, and Node/browser-core result parity.
 
-The browser keeps the existing question flow, controls, styling, and summary interactions. Guidance text, sources, conditional steps, and step counts now reflect the supplied table. The final-step button uses the actual final step so its existing **Done, view summary** label remains available. No new browser questions were added: the browser cannot distinguish downloading, installation, or remote access, and cannot specifically select an identity-document photo. Those limitations are explicit in guidance. CLI/MCP have the requested incident categories.
+The browser presents one checklist step per screen, with conditional guidance, source citations, and a summary. Its questions cannot distinguish downloading, installation, or remote access, and cannot specifically select an identity-document photo. Guidance explains those limitations. CLI/MCP support the incident categories listed below.
 
 ## CLI usage
 
@@ -44,7 +55,7 @@ All three plan options are required:
 | `--account` | `personal`, `school`, `work`, `not_sure` |
 | `--reused` | `yes`, `no`, `not_sure` |
 
-`--reused` affects only `typed_password`; other incidents treat reuse as not applicable. Account categories provide context and uncertainty; the supplied table does not establish an organization-specific response sequence. Login access is unknown through these interfaces, so password-change and account-recovery steps have explicit, alternative conditions.
+`--reused` affects only `typed_password`; other incidents treat reuse as not applicable. Account categories provide context and uncertainty; the public guidance sources do not establish an organization-specific response sequence. Login access is unknown through these interfaces, so password-change and account-recovery steps have explicit, alternative conditions.
 
 `dissect --text` reads a UTF-8 regular file or stdin (`-`). Text must be nonblank and at most 12,000 JavaScript string units. At most 10 distinct URLs are inspected. Malformed or unsupported URLs are successful analyses with uncertainty, not argument errors. File reads are bounded; the tool does not open URLs mentioned in the input.
 
@@ -153,24 +164,18 @@ Protocol errors use JSON-RPC `error`: `-32700` for invalid JSON/incomplete EOF, 
 - The browser keeps inputs in tab memory. CLI/MCP retain no history and return only to their local caller. An agent client can retain or forward what it receives; its behavior is outside this server. Demonstrate with fictional data only.
 - Link results omit user-info credentials, URL paths, queries, and fragments. Hostnames themselves can contain identifiers; input is not a general-purpose anonymization service. Remove personal information before use.
 - Offline structure checks cannot confirm ownership, follow redirects, detect infection, contact banks, change passwords, refund payments, or guarantee safety. Marking a checklist step done records only a user's report.
-- Guidance uses only the supplied table. Country-specific identity programs and unverified specialist sequences are not presented as worldwide instructions. No phone numbers are included. A single incident category does not imply that other exposures did not occur.
+- Guidance comes from the public agency sources listed above. Country-specific identity programs and specialist sequences without supporting guidance are not presented as worldwide instructions. No phone numbers are included. A single incident category does not imply that other exposures did not occur.
 
 ## Work produced within October 17 – November 22, 2026
 
-The following work was done in this session on **November 13, 2026**, within the build window:
+- **November 12, 2026:** Created the first prototype.
+- **November 13, 2026:** Added the shared core, CLI, local MCP server, and tests.
+- **November 17, 2026:** Clarified manual summary-copy instructions for computers and phones, added a regression test, and updated the README.
 
-- Extracted the existing core and unmodified PSL/license snapshot into `core.mjs`; added deterministic embedding and committed the generated standalone page.
-- Wrote and ran 15 CLI/MCP tests before implementing the interfaces. All 15 failed because the interfaces did not exist. The existing 28 tests passed at that point.
-- Added the offline CLI and dependency-free stdio MCP server, shared validation, advertised input/output schemas, and bounded input handling.
-- Replaced provisional guidance with conditional, attributed material from the owner's supplied table; preserved CSS and existing control wording and layout.
-- Added 14 supplementary checks after implementation for guidance, build parity, PSL/license/CSS preservation, state transitions, schemas, no network APIs, and streaming protocol behavior.
-- Updated the expectations of nine earlier tests that still described the provisional steps, keeping what each test checks (no tests removed; assertions increased). Full suite: 57/57 pass on Node 22.
-
-The first prototype was built on November 12, 2026, within the build window. Unit-level UI checks use DOM doubles; separate browser walkthroughs (headless Chromium at desktop and mobile widths, sample flow end to end, no network requests observed) were run during review. No real accounts, live MCP client integrations, or external services were used.
+All original work on After the Click was created within the hackathon period. The only pre-existing third-party material bundled in the app is the Public Suffix List snapshot described in Credits. The checklist draws on the public agency guidance linked above.
 
 ## Credits and AI assistance
 
-- Original prototype credit, preserved from the supplied README: prototype code and tests were generated with OpenAI Codex from written specifications and design mockups; planning, review, and browser testing used Anthropic Claude.
-- This November 13 extension, tests, documentation, and source-table adaptation were AI-assisted with OpenAI Codex. Agency wording and verification dates were supplied by the owner. The guidance wording will be reviewed again before submission. No AI model runs inside this app.
-- Includes the Public Suffix List (© 2010–2026 PSL maintainers), Mozilla Public License 2.0. Its rule lines and license text are unchanged in `core.mjs` and the generated `index.html`; contributor comment lines were removed to keep the file small, and a checksum test pins the embedded copy. Snapshot: Debian publicsuffix 20260129.1928-1.
-- Sample messages are fictional; demo domains use reserved `.test` / `.example` names. Some inherited unit tests contain public domain names strictly as offline parser inputs; they are never contacted.
+- I used OpenAI Codex to generate code and tests, and Anthropic Claude for planning, review, and browser checks. I selected the project and its design direction from options explored with AI assistance. No AI model runs inside this app.
+- Includes the Public Suffix List (© 2010–2026 PSL maintainers), Mozilla Public License 2.0. Its rule lines and license text are preserved in `core.mjs` and the generated `index.html`; contributor comment lines are omitted to keep the file small, and a checksum test pins the embedded copy. Snapshot: Debian publicsuffix 20260129.1928-1.
+- Sample messages are fictional; demo domains use reserved `.test` / `.example` names. Some parser tests contain public domain names strictly as offline inputs; they are never contacted.
